@@ -5,6 +5,19 @@
 # Dependencies
 node_modules/
 
+# Environment Variables - NEVER commit these!
+.env
+.env.*
+!.env.example
+
+# SQLite Database (contains user data)
+*.db
+*.db-journal
+*.sqlite
+
+# Uploaded Files
+uploads/
+
 # Prisma generated client
 node_modules/.prisma/
 

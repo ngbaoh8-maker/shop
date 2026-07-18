@@ -5,6 +5,20 @@
 # Dependencies
 node_modules/
 
+# Environment Variables - NEVER commit these!
+.env
+.env.local
+.env.*
+*.env
+
+# Databases
+*.db
+*.sqlite
+
+# Logs
+*.log
+logs/
+
 # OS Files
 .DS_Store
 Thumbs.db
