@@ -5,19 +5,6 @@
 # Dependencies
 node_modules/
 
-# Environment Variables - NEVER commit these!
-.env
-.env.local
-.env.development
-.env.production
-.env.test
-*.env
-
-# Logs
-*.log
-logs/
-npm-debug.log*
-
 # OS Files
 .DS_Store
 Thumbs.db

@@ -9,11 +9,6 @@ node_modules/
 .next/
 out/
 
-# Environment Variables
-.env
-.env.*
-!.env.example
-
 # Debug
 npm-debug.log*
 
