@@ -1,0 +1,25 @@
+# ===========================
+# Client .gitignore
+# ===========================
+
+# Dependencies
+node_modules/
+
+# Next.js Build Output
+.next/
+out/
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Debug
+npm-debug.log*
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

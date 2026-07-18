@@ -1,0 +1,62 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  role      String   @default("USER") // USER, ADMIN, SUPER_ADMIN
+  status    String   @default("ACTIVE") // ACTIVE, LOCKED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+  logs      Log[]
+}
+
+model Tool {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  fileUrl     String   // Secure local path or cloud storage path
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]
+}
+
+model Order {
+  id              String   @id // Unique order code (e.g., TK-XXXXXX or TL-XXXXXX)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  type            String   // TOKEN or TOOL
+  quantity        Int      @default(1)
+  toolId          String?
+  tool            Tool?    @relation(fields: [toolId], references: [id])
+  totalAmount     Float
+  transferMessage String   @unique // Unique message for banking
+  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  fileUrl         String?  // TXT file for token, or Tool download link once approved
+  discordMsgId    String?  // Message ID on Discord
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Log {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  details   String
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  key   String @id
+  value String
+}

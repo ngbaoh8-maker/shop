@@ -1,0 +1,14 @@
+{
+  "name": "valkyrie-shop-monorepo",
+  "version": "1.0.0",
+  "description": "Unified launcher workspace for Valkyrie Shop Client and Server",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm i && npm.cmd i --prefix client && npm.cmd i --prefix server",
+    "db:push": "npm.cmd run db:push --prefix server",
+    "dev": "concurrently \"npm.cmd run dev --prefix client\" \"npm.cmd start --prefix server\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
