@@ -5,6 +5,7 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
 
   // === SECURITY: HTTP Security Headers ===
+  /*
   async headers() {
     return [
       {
@@ -54,6 +55,7 @@ const nextConfig = {
       }
     ];
   },
+  */
 
   // === PERFORMANCE: Image optimization ===
   images: {
