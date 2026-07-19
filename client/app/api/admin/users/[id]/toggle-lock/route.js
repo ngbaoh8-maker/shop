@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import prisma from '../../../../../lib/db';
 import { verifyAuth, hasRole } from '../../../../../lib/auth';
 

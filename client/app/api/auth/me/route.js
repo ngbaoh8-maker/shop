@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import { verifyAuth } from '../../../lib/auth';
 
 export async function GET(req) {

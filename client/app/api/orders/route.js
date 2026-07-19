@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import crypto from 'crypto';
 import prisma from '../../lib/db';
 import { verifyAuth } from '../../lib/auth';

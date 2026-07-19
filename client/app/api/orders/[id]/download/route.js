@@ -1,7 +1,7 @@
-import { promises as fs } from 'fs';
-import path from 'path';
 import prisma from '../../../../lib/db';
 import { verifyAuth } from '../../../../lib/auth';
+
+export const runtime = 'nodejs';
 
 export async function GET(req, { params }) {
   try {
@@ -16,9 +16,7 @@ export async function GET(req, { params }) {
       include: { tool: true }
     });
 
-    if (!order) {
-      return new Response('Không tìm thấy đơn hàng.', { status: 404 });
-    }
+    if (!order) return new Response('Không tìm thấy đơn hàng.', { status: 404 });
 
     // Ownership check
     if (order.userId !== user.id && user.role !== 'ADMIN' && user.role !== 'SUPER_ADMIN') {
@@ -26,65 +24,51 @@ export async function GET(req, { params }) {
     }
 
     if (order.status !== 'APPROVED') {
-      return new Response('Đơn hàng chưa được thanh toán thành công hoặc chưa được duyệt.', { status: 400 });
+      return new Response('Đơn hàng chưa được duyệt.', { status: 400 });
     }
 
-    let relativeFileUrl = order.fileUrl;
-    // If it's a tool download, resolve from tool schema if not set on order directly
-    if (!relativeFileUrl && order.type === 'TOOL' && order.tool) {
-      relativeFileUrl = order.tool.fileUrl;
+    let fileContent = null;
+    let filename = `order-${order.id}.txt`;
+    let mimeType = 'text/plain';
+
+    const fileUrl = order.fileUrl || (order.type === 'TOOL' && order.tool?.fileUrl);
+
+    if (!fileUrl) {
+      return new Response('File chưa được thiết lập. Vui lòng liên hệ Admin.', { status: 404 });
     }
 
-    if (!relativeFileUrl) {
-      return new Response('Tài nguyên tải về chưa được thiết lập cho đơn hàng này. Vui lòng liên hệ Admin.', { status: 404 });
-    }
+    // Handle base64 data URI stored in DB (new approach for Netlify serverless)
+    if (fileUrl.startsWith('data:')) {
+      const matches = fileUrl.match(/^data:([^;]+);base64,(.+)$/);
+      if (!matches) return new Response('Định dạng file lỗi.', { status: 500 });
+      mimeType = matches[1] || 'application/octet-stream';
+      fileContent = Buffer.from(matches[2], 'base64');
 
-    // Resolve absolute path safely
-    let absoluteFilePath = '';
-    if (relativeFileUrl.startsWith('/')) {
-      // Relative web path inside public folder
-      absoluteFilePath = path.join(process.cwd(), 'public', relativeFileUrl);
+      if (order.type === 'TOKEN') filename = `tokens-${order.id}.txt`;
+      else if (order.type === 'TOOL') filename = `tool-${order.tool?.name || order.id}.zip`;
     } else {
-      // Relative file path from project root
-      absoluteFilePath = path.join(process.cwd(), relativeFileUrl);
+      // Legacy: it's a URL/path string — redirect or return error
+      return Response.redirect(fileUrl, 302);
     }
 
-    try {
-      await fs.access(absoluteFilePath);
-    } catch {
-      // Try resolving relative to server path if migrating from legacy folder structure
-      const legacyPath = path.join(process.cwd(), '..', 'server', relativeFileUrl);
-      try {
-        await fs.access(legacyPath);
-        absoluteFilePath = legacyPath;
-      } catch {
-        return new Response('Không tìm thấy file trên máy chủ. Vui lòng liên hệ Admin.', { status: 404 });
-      }
-    }
-
-    const fileBuffer = await fs.readFile(absoluteFilePath);
-    const filename = path.basename(absoluteFilePath);
-
-    // Logging action
     await prisma.log.create({
       data: {
         userId: user.id,
         action: 'DOWNLOAD',
-        details: `Tải xuống tài nguyên thành công cho đơn hàng: ${order.id}`
+        details: `Tải xuống thành công đơn hàng: ${order.id}`
       }
     });
 
-    // Stream download response headers
-    return new Response(fileBuffer, {
+    return new Response(fileContent, {
       status: 200,
       headers: {
-        'Content-Type': 'application/octet-stream',
+        'Content-Type': mimeType,
         'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}"`,
-        'Content-Length': fileBuffer.length.toString()
+        'Content-Length': fileContent.length.toString()
       }
     });
   } catch (err) {
     console.error('[Download API Error]', err);
-    return new Response('Lỗi tải file hệ thống.', { status: 500 });
+    return new Response('Lỗi tải file: ' + err.message, { status: 500 });
   }
 }

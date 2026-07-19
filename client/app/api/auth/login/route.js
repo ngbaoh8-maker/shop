@@ -1,3 +1,4 @@
+export const runtime = 'nodejs';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../../../lib/db';
