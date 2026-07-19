@@ -1,6 +1,6 @@
 [build]
   base = "client"
-  command = "npm run build"
+  command = "npx prisma generate && npm run build"
   publish = ".next"
 
 [build.environment]
