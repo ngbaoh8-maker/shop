@@ -1,9 +1,9 @@
-export const runtime = 'nodejs';
 import { promises as fs } from 'fs';
 import path from 'path';
 import prisma from '../../../../../lib/db';
 import { verifyAuth, hasRole } from '../../../../../lib/auth';
 import { updateOrderNotification } from '../../../../../lib/discord';
+export const runtime = 'nodejs';
 
 const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads', 'tokens');
 

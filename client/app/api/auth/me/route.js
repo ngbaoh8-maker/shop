@@ -1,5 +1,5 @@
-export const runtime = 'nodejs';
 import { verifyAuth } from '../../../lib/auth';
+export const runtime = 'nodejs';
 
 export async function GET(req) {
   try {

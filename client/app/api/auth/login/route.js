@@ -1,7 +1,7 @@
-export const runtime = 'nodejs';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../../../lib/db';
+export const runtime = 'nodejs';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-token-key-2026';
 

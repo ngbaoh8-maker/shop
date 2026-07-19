@@ -1,8 +1,8 @@
-export const runtime = 'nodejs';
 import crypto from 'crypto';
 import prisma from '../../lib/db';
 import { verifyAuth } from '../../lib/auth';
 import { sendOrderNotification } from '../../lib/discord';
+export const runtime = 'nodejs';
 
 // GET: Fetch user's orders (or all orders for Admins)
 export async function GET(req) {

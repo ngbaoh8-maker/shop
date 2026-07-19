@@ -1,6 +1,6 @@
-export const runtime = 'nodejs';
 import prisma from '../../../../lib/db';
 import { verifyAuth } from '../../../../lib/auth';
+export const runtime = 'nodejs';
 
 export async function POST(req, { params }) {
   try {

@@ -1,7 +1,7 @@
-export const runtime = 'nodejs';
 import prisma from '../../../../../lib/db';
 import { verifyAuth, hasRole } from '../../../../../lib/auth';
 import { updateOrderNotification } from '../../../../../lib/discord';
+export const runtime = 'nodejs';
 
 // POST /api/orders/[id]/reject-web
 export async function POST(req, { params }) {

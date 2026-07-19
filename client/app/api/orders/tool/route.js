@@ -1,9 +1,9 @@
-export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import prisma from '../../../lib/db';
 import { verifyAuth } from '../../../lib/auth';
 import { sendOrderNotification } from '../../../lib/discord';
+export const runtime = 'nodejs';
 
 export async function POST(req) {
   try {

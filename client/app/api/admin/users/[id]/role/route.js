@@ -1,6 +1,6 @@
-export const runtime = 'nodejs';
 import prisma from '../../../../../lib/db';
 import { verifyAuth, hasRole } from '../../../../../lib/auth';
+export const runtime = 'nodejs';
 
 // POST /api/admin/users/[id]/role
 export async function POST(req, { params }) {

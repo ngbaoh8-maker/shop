@@ -1,6 +1,6 @@
-export const runtime = 'nodejs';
 import prisma from '../../../lib/db';
 import { verifyAuth, hasRole } from '../../../lib/auth';
+export const runtime = 'nodejs';
 
 // /api/admin/stats → alias for metrics
 export async function GET(req) {

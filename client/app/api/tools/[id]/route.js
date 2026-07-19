@@ -1,8 +1,8 @@
-export const runtime = 'nodejs';
 import { promises as fs } from 'fs';
 import path from 'path';
 import prisma from '../../../lib/db';
 import { verifyAuth, hasRole } from '../../../lib/auth';
+export const runtime = 'nodejs';
 
 export async function DELETE(req, { params }) {
   try {
