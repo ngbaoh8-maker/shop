@@ -30,9 +30,9 @@ export default function RootLayout({ children }) {
         {children}
 
         {/* ============================================
-            ANTI-DEVTOOLS & ANTI-SCRAPING PROTECTION
-            Chống xem source, chống scrape, chống DevTools
+            ANTI-DEVTOOLS & ANTI-SCRAPING PROTECTION (TEMPORARILY DISABLED FOR DEBUGGING)
         ============================================ */}
+        {/*
         <Script id="security-shield" strategy="afterInteractive">{`
           (function() {
             'use strict';
@@ -122,8 +122,10 @@ export default function RootLayout({ children }) {
 
             // === 5. Disable Text Selection on sensitive elements ===
             document.addEventListener('selectstart', function(e) {
-              if (e.target.closest('[data-no-select]')) {
-                e.preventDefault();
+              if (e.target && typeof e.target.closest === 'function') {
+                if (e.target.closest('[data-no-select]')) {
+                  e.preventDefault();
+                }
               }
             });
 
@@ -134,6 +136,7 @@ export default function RootLayout({ children }) {
 
           })();
         `}</Script>
+        */}
       </body>
     </html>
   );
