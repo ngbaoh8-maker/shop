@@ -72,76 +72,81 @@ function cleanupMap() {
 }
 
 export function middleware(req) {
-  const { pathname } = req.nextUrl;
-  const userAgent = req.headers.get('user-agent') || '';
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    || req.headers.get('x-real-ip')
-    || '0.0.0.0';
+  try {
+    const { pathname } = req.nextUrl;
+    const userAgent = req.headers.get('user-agent') || '';
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || req.headers.get('x-real-ip')
+      || '0.0.0.0';
 
-  // === 1. BLOCK MALICIOUS BOTS ===
-  const isAllowedBot = ALLOWED_BOTS.some(pattern => pattern.test(userAgent));
-  if (!isAllowedBot) {
-    const isBadBot = BAD_BOT_PATTERNS.some(pattern => pattern.test(userAgent));
-    if (isBadBot) {
+    // === 1. BLOCK MALICIOUS BOTS ===
+    const isAllowedBot = ALLOWED_BOTS.some(pattern => pattern.test(userAgent));
+    if (!isAllowedBot) {
+      const isBadBot = BAD_BOT_PATTERNS.some(pattern => pattern.test(userAgent));
+      if (isBadBot) {
+        return new NextResponse(
+          JSON.stringify({ message: 'Quyền truy cập bị từ chối.' }),
+          { status: 403, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    // === 2. BLOCK EMPTY USER AGENTS ON API ROUTES ===
+    if (pathname.startsWith('/api/') && !userAgent) {
       return new NextResponse(
-        JSON.stringify({ message: 'Quyền truy cập bị từ chối.' }),
-        { status: 403, headers: { 'Content-Type': 'application/json' } }
+        JSON.stringify({ message: 'Yêu cầu không hợp lệ.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
-  }
 
-  // === 2. BLOCK EMPTY USER AGENTS ON API ROUTES ===
-  if (pathname.startsWith('/api/') && !userAgent) {
-    return new NextResponse(
-      JSON.stringify({ message: 'Yêu cầu không hợp lệ.' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
-
-  // === 3. RATE LIMITING ===
-  cleanupMap();
-  if (isRateLimited(ip, pathname)) {
-    const isApi = pathname.startsWith('/api/');
-    if (isApi) {
-      return new NextResponse(
-        JSON.stringify({ message: 'Quá nhiều yêu cầu. Vui lòng thử lại sau 1 phút.' }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'Retry-After': '60'
+    // === 3. RATE LIMITING ===
+    cleanupMap();
+    if (isRateLimited(ip, pathname)) {
+      const isApi = pathname.startsWith('/api/');
+      if (isApi) {
+        return new NextResponse(
+          JSON.stringify({ message: 'Quá nhiều yêu cầu. Vui lòng thử lại sau 1 phút.' }),
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': '60'
+            }
           }
-        }
+        );
+      }
+      // For page requests: redirect to home with a flag
+      return new NextResponse(
+        '<html><body><h1>429 - Quá nhiều yêu cầu</h1><p>Vui lòng thử lại sau 1 phút.</p></body></html>',
+        { status: 429, headers: { 'Content-Type': 'text/html' } }
       );
     }
-    // For page requests: redirect to home with a flag
-    return new NextResponse(
-      '<html><body><h1>429 - Quá nhiều yêu cầu</h1><p>Vui lòng thử lại sau 1 phút.</p></body></html>',
-      { status: 429, headers: { 'Content-Type': 'text/html' } }
-    );
+
+    // === 4. SECURITY HEADERS ===
+    const res = NextResponse.next();
+
+    res.headers.set('X-Content-Type-Options', 'nosniff');
+    res.headers.set('X-Frame-Options', 'DENY');
+    res.headers.set('X-XSS-Protection', '1; mode=block');
+    res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+
+    // Block direct access to source browsing paths
+    if (
+      pathname.includes('/.git') ||
+      pathname.includes('/node_modules') ||
+      pathname.includes('/.env') ||
+      pathname.includes('/prisma') ||
+      pathname.endsWith('.map')
+    ) {
+      return new NextResponse('Not Found', { status: 404 });
+    }
+
+    return res;
+  } catch (err) {
+    console.error('[Middleware Error]', err);
+    return NextResponse.next();
   }
-
-  // === 4. SECURITY HEADERS ===
-  const res = NextResponse.next();
-
-  res.headers.set('X-Content-Type-Options', 'nosniff');
-  res.headers.set('X-Frame-Options', 'DENY');
-  res.headers.set('X-XSS-Protection', '1; mode=block');
-  res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-
-  // Block direct access to source browsing paths
-  if (
-    pathname.includes('/.git') ||
-    pathname.includes('/node_modules') ||
-    pathname.includes('/.env') ||
-    pathname.includes('/prisma') ||
-    pathname.endsWith('.map')
-  ) {
-    return new NextResponse('Not Found', { status: 404 });
-  }
-
-  return res;
 }
 
 export const config = {
