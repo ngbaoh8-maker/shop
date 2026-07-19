@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useToast } from './Toast';
 import { Coins, ShoppingCart, HelpCircle, Download, CheckCircle, Clock, Copy, X } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function TokenSection({ token }) {
   const [qty, setQty] = useState(10);

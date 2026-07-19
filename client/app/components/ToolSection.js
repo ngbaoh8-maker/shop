@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useToast } from './Toast';
 import { Terminal, Cpu, Clock, CheckCircle, Download, Copy, X } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function ToolSection({ token }) {
   const [tools, setTools] = useState([]);

@@ -7,7 +7,7 @@ import {
   Trash2, Lock, Unlock, ShieldAlert, Upload, Check, XCircle, Plus, Eye 
 } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function AdminSection({ token, userRole }) {
   const [activeSubTab, setActiveSubTab] = useState('stats');

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useToast } from './Toast';
 import { Shield, Lock, User, ArrowRight, Activity } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 export default function AuthScreen({ onLoginSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
