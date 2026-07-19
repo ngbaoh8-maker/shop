@@ -1,6 +1,6 @@
-import prisma from '../../../../../lib/db';
-import { verifyAuth, hasRole } from '../../../../../lib/auth';
-import { updateOrderNotification } from '../../../../../lib/discord';
+import prisma from '../../../../lib/db';
+import { verifyAuth, hasRole } from '../../../../lib/auth';
+import { updateOrderNotification } from '../../../../lib/discord';
 export const runtime = 'nodejs';
 
 // POST /api/orders/[id]/reject-web

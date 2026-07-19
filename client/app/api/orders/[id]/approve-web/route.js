@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../../../lib/db';
-import { verifyAuth, hasRole } from '../../../../../lib/auth';
-import { updateOrderNotification } from '../../../../../lib/discord';
+import prisma from '../../../../lib/db';
+import { verifyAuth, hasRole } from '../../../../lib/auth';
+import { updateOrderNotification } from '../../../../lib/discord';
 
 // Force Node.js runtime (NOT Edge) because we use Prisma + fs
 export const runtime = 'nodejs';
