@@ -70,7 +70,17 @@ export async function POST(req) {
       }
     });
 
-    return NextResponse.json({ message: 'Tạo đơn hàng thành công.', order: { ...order, qrUrl } }, { status: 201 });
+    return NextResponse.json({
+      message: 'Tạo đơn hàng thành công.',
+      order: { ...order, qrUrl },
+      bankDetails: {
+        bankName: 'MB Bank (Ngân Hàng Quân Đội)',
+        accountNo: bankAccount,
+        accountName: accountName,
+        amount: totalAmount,
+        message: transferMessage
+      }
+    }, { status: 201 });
   } catch (err) {
     console.error('[Tool Order Error]', err);
     return NextResponse.json({ message: 'Tạo đơn hàng thất bại. Vui lòng thử lại.' }, { status: 500 });

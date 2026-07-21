@@ -258,14 +258,14 @@ export default function TokenSection({ token }) {
                 <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5 space-y-3 text-xs">
                   <div>
                     <span className="text-gray-400 block">Ngân hàng</span>
-                    <span className="text-slate-100 font-bold">{checkoutData.bankDetails.bankName}</span>
+                    <span className="text-slate-100 font-bold">{checkoutData?.bankDetails?.bankName || 'MB Bank (Ngân Hàng Quân Đội)'}</span>
                   </div>
                   <div>
                     <span className="text-gray-400 block">Số tài khoản</span>
                     <div className="flex items-center justify-between mt-0.5">
-                      <span className="text-slate-100 font-bold font-mono text-sm">{checkoutData.bankDetails.accountNo}</span>
+                      <span className="text-slate-100 font-bold font-mono text-sm">{checkoutData?.bankDetails?.accountNo || ''}</span>
                       <button 
-                        onClick={() => copyToClipboard(checkoutData.bankDetails.accountNo, 'Số tài khoản')}
+                        onClick={() => copyToClipboard(checkoutData?.bankDetails?.accountNo || '', 'Số tài khoản')}
                         className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
                       >
                         <Copy className="w-3.5 h-3.5" />
@@ -274,14 +274,14 @@ export default function TokenSection({ token }) {
                   </div>
                   <div>
                     <span className="text-gray-400 block">Tên tài khoản</span>
-                    <span className="text-slate-100 font-bold">{checkoutData.bankDetails.accountName}</span>
+                    <span className="text-slate-100 font-bold">{checkoutData?.bankDetails?.accountName || ''}</span>
                   </div>
                   <div>
                     <span className="text-gray-400 block">Số tiền cần chuyển</span>
                     <div className="flex items-center justify-between mt-0.5">
-                      <span className="text-indigo-400 font-extrabold text-sm">{checkoutData.bankDetails.amount.toLocaleString()} VNĐ</span>
+                      <span className="text-indigo-400 font-extrabold text-sm">{(checkoutData?.bankDetails?.amount || 0).toLocaleString()} VNĐ</span>
                       <button 
-                        onClick={() => copyToClipboard(checkoutData.bankDetails.amount, 'Số tiền')}
+                        onClick={() => copyToClipboard(checkoutData?.bankDetails?.amount || '', 'Số tiền')}
                         className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
                       >
                         <Copy className="w-3.5 h-3.5" />
@@ -291,9 +291,9 @@ export default function TokenSection({ token }) {
                   <div>
                     <span className="text-gray-400 block">Nội dung chuyển khoản (bắt buộc nhập đúng)</span>
                     <div className="flex items-center justify-between mt-0.5 p-2 bg-indigo-500/10 border border-indigo-500/20 rounded-xl">
-                      <span className="text-indigo-300 font-extrabold font-mono text-sm">{checkoutData.bankDetails.message}</span>
+                      <span className="text-indigo-300 font-extrabold font-mono text-sm">{checkoutData?.bankDetails?.message || ''}</span>
                       <button 
-                        onClick={() => copyToClipboard(checkoutData.bankDetails.message, 'Nội dung chuyển khoản')}
+                        onClick={() => copyToClipboard(checkoutData?.bankDetails?.message || '', 'Nội dung chuyển khoản')}
                         className="text-indigo-400 hover:text-indigo-300 cursor-pointer"
                       >
                         <Copy className="w-3.5 h-3.5" />

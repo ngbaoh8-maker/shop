@@ -221,26 +221,26 @@ export default function OrdersSection({ token }) {
                 <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/5 space-y-2 text-xs">
                   <div>
                     <span className="text-gray-400 block">Ngân hàng</span>
-                    <span className="text-slate-100 font-bold">{activePaymentOrder.bankDetails.bankName}</span>
+                    <span className="text-slate-100 font-bold">{activePaymentOrder?.bankDetails?.bankName || 'MB Bank (Ngân Hàng Quân Đội)'}</span>
                   </div>
                   <div>
                     <span className="text-gray-400 block">Số tài khoản</span>
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-100 font-bold font-mono">{activePaymentOrder.bankDetails.accountNo}</span>
-                      <button onClick={() => copyToClipboard(activePaymentOrder.bankDetails.accountNo, 'Số tài khoản')} className="text-indigo-400">
+                      <span className="text-slate-100 font-bold font-mono">{activePaymentOrder?.bankDetails?.accountNo || ''}</span>
+                      <button onClick={() => copyToClipboard(activePaymentOrder?.bankDetails?.accountNo || '', 'Số tài khoản')} className="text-indigo-400">
                         <Copy className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
                   <div>
                     <span className="text-gray-400 block">Số tiền cần chuyển</span>
-                    <span className="text-indigo-400 font-extrabold">{activePaymentOrder.bankDetails.amount.toLocaleString()} VNĐ</span>
+                    <span className="text-indigo-400 font-extrabold">{(activePaymentOrder?.bankDetails?.amount || 0).toLocaleString()} VNĐ</span>
                   </div>
                   <div>
                     <span className="text-gray-400 block">Nội dung chuyển khoản</span>
                     <div className="flex items-center justify-between p-2 bg-indigo-500/10 border border-indigo-500/20 rounded-xl mt-1">
-                      <span className="text-indigo-300 font-extrabold font-mono">{activePaymentOrder.bankDetails.message}</span>
-                      <button onClick={() => copyToClipboard(activePaymentOrder.bankDetails.message, 'Nội dung')} className="text-indigo-400">
+                      <span className="text-indigo-300 font-extrabold font-mono">{activePaymentOrder?.bankDetails?.message || ''}</span>
+                      <button onClick={() => copyToClipboard(activePaymentOrder?.bankDetails?.message || '', 'Nội dung')} className="text-indigo-400">
                         <Copy className="w-3.5 h-3.5" />
                       </button>
                     </div>
