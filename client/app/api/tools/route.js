@@ -1,19 +1,6 @@
-import { promises as fs } from 'fs';
-import path from 'path';
 import prisma from '../../lib/db';
 import { verifyAuth, hasRole } from '../../lib/auth';
 export const runtime = 'nodejs';
-
-// Ensure uploads folder exists in Next.js public directory
-const UPLOADS_DIR = path.join(process.cwd(), 'public', 'uploads', 'tools');
-
-async function ensureDir(dirPath) {
-  try {
-    await fs.access(dirPath);
-  } catch {
-    await fs.mkdir(dirPath, { recursive: true });
-  }
-}
 
 // GET: List all tools
 export async function GET(req) {
@@ -34,7 +21,7 @@ export async function GET(req) {
   }
 }
 
-// POST: Add a new tool (Admin / Super Admin)
+// POST: Add a new tool (Admin / Super Admin) — store file as base64 in DB
 export async function POST(req) {
   try {
     const user = await verifyAuth(req);
@@ -57,17 +44,11 @@ export async function POST(req) {
       return Response.json({ message: 'Giá tiền không hợp lệ.' }, { status: 400 });
     }
 
-    // Process file upload
-    await ensureDir(UPLOADS_DIR);
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    
-    const uniqueFilename = `tool-${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
-    const filePath = path.join(UPLOADS_DIR, uniqueFilename);
-    await fs.writeFile(filePath, buffer);
-
-    // Save metadata path relative to web public folder
-    const fileUrl = `/uploads/tools/${uniqueFilename}`;
+    // Store file as base64 data URI in DB (serverless compatible)
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const base64Content = buffer.toString('base64');
+    const mimeType = file.type || 'application/octet-stream';
+    const fileUrl = `data:${mimeType};base64,${base64Content}`;
 
     const newTool = await prisma.tool.create({
       data: {

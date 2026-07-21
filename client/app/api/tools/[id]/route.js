@@ -1,5 +1,3 @@
-import { promises as fs } from 'fs';
-import path from 'path';
 import prisma from '../../../lib/db';
 import { verifyAuth, hasRole } from '../../../lib/auth';
 export const runtime = 'nodejs';
@@ -20,17 +18,7 @@ export async function DELETE(req, { params }) {
       return Response.json({ message: 'Không tìm thấy sản phẩm tool.' }, { status: 404 });
     }
 
-    // Try deleting physical file
-    if (tool.fileUrl) {
-      const filePath = path.join(process.cwd(), 'public', tool.fileUrl);
-      try {
-        await fs.unlink(filePath);
-      } catch (err) {
-        console.warn(`[File Delete Warning] Could not remove tool file ${filePath}:`, err.message);
-      }
-    }
-
-    // Delete tool in db
+    // Delete tool in db (file is stored as base64 in DB, no filesystem cleanup needed)
     await prisma.tool.delete({
       where: { id }
     });
