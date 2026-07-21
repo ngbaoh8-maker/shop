@@ -11,8 +11,11 @@ async function seedDefaultSuperAdmin() {
     const adminUsername = process.env.SUPER_ADMIN_USERNAME || 'admin';
     const adminPassword = process.env.SUPER_ADMIN_PASSWORD || 'acccuadmin';
 
-    const userCount = await prisma.user.count();
-    if (userCount === 0) {
+    const existingAdmin = await prisma.user.findUnique({
+      where: { username: adminUsername }
+    });
+
+    if (!existingAdmin) {
       const hashedPassword = await bcrypt.hash(adminPassword, 10);
       await prisma.user.create({
         data: {
