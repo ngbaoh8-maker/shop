@@ -126,19 +126,6 @@ export default function SupportWidget() {
           </>
         )}
       </button>
-
-      <style jsx>{`
-        @keyframes panelOpen {
-          from {
-            transform: scale(0.9) translateY(10px);
-            opacity: 0;
-          }
-          to {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 }

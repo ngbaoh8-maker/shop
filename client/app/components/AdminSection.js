@@ -85,7 +85,7 @@ export default function AdminSection({ token, userRole }) {
     formData.append('name', toolName);
     formData.append('description', toolDesc);
     formData.append('price', toolPrice);
-    formData.append('toolFile', toolFile);
+    formData.append('file', toolFile);
 
     try {
       await axios.post(`${API_URL}/tools`, formData, {
